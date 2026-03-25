@@ -75,22 +75,48 @@ function CompactRow({ item }) {
   const delayed = item.plannedTime !== item.expectedTime;
 
   return (
-    <div className="grid grid-cols-[64px_64px_72px_1fr_56px_52px] items-center gap-2 border-b border-slate-200 px-3 py-2 text-sm last:border-b-0 md:grid-cols-[72px_72px_88px_1fr_64px_56px]">
-      <div className="font-semibold text-slate-900">{item.plannedTime}</div>
-      <div className={delayed ? "font-semibold text-red-700" : "text-slate-700"}>
-        {item.expectedTime}
+    <>
+      {/* Desktop */}
+      <div className="hidden md:grid grid-cols-[72px_72px_88px_1fr_64px_56px] items-center gap-2 border-b border-slate-200 px-3 py-2 text-sm last:border-b-0">
+        <div className="font-semibold text-slate-900">{item.plannedTime}</div>
+        <div className={delayed ? "font-semibold text-red-700" : "text-slate-700"}>
+          {item.expectedTime}
+        </div>
+        <div className="truncate font-medium text-slate-900">{item.line}</div>
+        <div className="truncate text-slate-800">{item.direction}</div>
+        <div className="text-center text-slate-600">{item.platform}</div>
+        <div>
+          <span className={`inline-block rounded px-1.5 py-0.5 text-xs font-medium ${statusClass(item.raw)}`}>
+            {statusLabel(item.raw)}
+          </span>
+        </div>
       </div>
-      <div className="truncate font-medium text-slate-900">{item.line}</div>
-      <div className="truncate text-slate-800" title={item.direction}>
-        {item.direction}
+
+      {/* Mobile */}
+      <div className="md:hidden border-b border-slate-200 px-3 py-3 last:border-b-0">
+        <div className="flex justify-between">
+          <div>
+            <div className="text-lg font-bold">{item.plannedTime}</div>
+            <div className={delayed ? "text-red-700 text-sm font-semibold" : "text-sm text-slate-600"}>
+              Oček. {item.expectedTime}
+            </div>
+          </div>
+
+          <div className="text-right">
+            <div className="font-semibold">{item.line}</div>
+            <div className="text-sm text-slate-500">Nást. {item.platform}</div>
+          </div>
+        </div>
+
+        <div className="mt-2 text-sm">{item.direction}</div>
+
+        <div className="mt-2 text-right">
+          <span className={`inline-block rounded px-2 py-1 text-xs ${statusClass(item.raw)}`}>
+            {statusLabel(item.raw)}
+          </span>
+        </div>
       </div>
-      <div className="text-center text-slate-600">{item.platform}</div>
-      <div>
-        <span className={`inline-block rounded px-1.5 py-0.5 text-xs font-medium ${statusClass(item.raw)}`}>
-          {statusLabel(item.raw)}
-        </span>
-      </div>
-    </div>
+    </>
   );
 }
 
