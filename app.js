@@ -77,16 +77,39 @@ function CompactRow({ item }) {
   return (
     <>
       {/* Desktop */}
-      <div className="hidden md:grid grid-cols-[72px_72px_88px_1fr_64px_56px] items-center gap-2 border-b border-slate-200 px-3 py-2 text-sm last:border-b-0">
-        <div className="font-semibold text-slate-900">{item.plannedTime}</div>
-        <div className={delayed ? "font-semibold text-red-700" : "text-slate-700"}>
+      <div className="hidden md:grid grid-cols-[90px_90px_100px_1fr_80px_80px] items-center gap-3 border-b border-slate-200 px-4 py-3 text-sm last:border-b-0">
+        <div className="font-semibold text-slate-900 text-lg">
+          {item.plannedTime}
+        </div>
+
+        <div
+          className={
+            delayed
+              ? "font-semibold text-red-700 text-lg"
+              : "text-slate-700 text-lg"
+          }
+        >
           {item.expectedTime}
         </div>
-        <div className="truncate font-medium text-slate-900">{item.line}</div>
-        <div className="truncate text-slate-800">{item.direction}</div>
-        <div className="text-center text-slate-600">{item.platform}</div>
-        <div>
-          <span className={`inline-block rounded px-1.5 py-0.5 text-xs font-medium ${statusClass(item.raw)}`}>
+
+        <div className="font-semibold text-slate-900">
+          {item.line}
+        </div>
+
+        <div className="truncate text-slate-800">
+          {item.direction}
+        </div>
+
+        <div className="text-center text-slate-600">
+          {item.platform}
+        </div>
+
+        <div className="text-right">
+          <span
+            className={`inline-block rounded px-2 py-1 text-xs font-medium ${statusClass(
+              item.raw
+            )}`}
+          >
             {statusLabel(item.raw)}
           </span>
         </div>
@@ -96,22 +119,42 @@ function CompactRow({ item }) {
       <div className="md:hidden border-b border-slate-200 px-3 py-3 last:border-b-0">
         <div className="flex justify-between">
           <div>
-            <div className="text-lg font-bold">{item.plannedTime}</div>
-            <div className={delayed ? "text-red-700 text-sm font-semibold" : "text-sm text-slate-600"}>
+            <div className="text-xl font-bold">
+              {item.plannedTime}
+            </div>
+
+            <div
+              className={
+                delayed
+                  ? "text-red-700 text-sm font-semibold"
+                  : "text-sm text-slate-600"
+              }
+            >
               Oček. {item.expectedTime}
             </div>
           </div>
 
           <div className="text-right">
-            <div className="font-semibold">{item.line}</div>
-            <div className="text-sm text-slate-500">Nást. {item.platform}</div>
+            <div className="font-semibold">
+              {item.line}
+            </div>
+
+            <div className="text-sm text-slate-500">
+              Nást. {item.platform}
+            </div>
           </div>
         </div>
 
-        <div className="mt-2 text-sm">{item.direction}</div>
+        <div className="mt-2 text-sm text-slate-800">
+          {item.direction}
+        </div>
 
         <div className="mt-2 text-right">
-          <span className={`inline-block rounded px-2 py-1 text-xs ${statusClass(item.raw)}`}>
+          <span
+            className={`inline-block rounded px-2 py-1 text-xs ${statusClass(
+              item.raw
+            )}`}
+          >
             {statusLabel(item.raw)}
           </span>
         </div>
@@ -131,11 +174,7 @@ function PrahaLibenDeparturesApp() {
     setError("");
 
     try {
-      const response = await fetch(API_URL, {
-        headers: {
-          Accept: "application/json",
-        },
-      });
+      const response = await fetch(API_URL);
 
       if (!response.ok) {
         const text = await response.text();
@@ -143,6 +182,7 @@ function PrahaLibenDeparturesApp() {
       }
 
       const data = await response.json();
+
       const rows = Array.isArray(data?.departures)
         ? data.departures
         : Array.isArray(data)
@@ -165,60 +205,59 @@ function PrahaLibenDeparturesApp() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-100 p-3 md:p-4">
-      <div className="mx-auto max-w-5xl rounded-2xl bg-white shadow">
-        <div className="border-b border-slate-200 px-4 py-3">
-          <div className="flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
-            <div>
-              <h1 className="text-xl font-bold tracking-tight text-slate-900">
-                Praha-Libeň — odjezdy
-              </h1>
-              <p className="text-xs text-slate-500">PID / Golemio</p>
-            </div>
-            {lastUpdated && (
-              <div className="text-xs text-slate-500">
-                Aktualizace{" "}
-                {lastUpdated.toLocaleTimeString("cs-CZ", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  second: "2-digit",
-                })}
-              </div>
-            )}
+    <div className="min-h-screen bg-slate-100 p-0">
+      <div className="w-full bg-white shadow">
+
+        {/* Header */}
+        <div className="border-b border-slate-200 px-4 py-3 flex justify-between items-end">
+          <div>
+            <h1 className="text-xl font-bold">
+              Praha-Libeň — odjezdy
+            </h1>
+            <p className="text-xs text-slate-500">
+              PID / Golemio
+            </p>
           </div>
+
+          {lastUpdated && (
+            <div className="text-xs text-slate-500">
+              Aktualizace{" "}
+              {lastUpdated.toLocaleTimeString("cs-CZ")}
+            </div>
+          )}
         </div>
 
+        {/* Loading */}
         {loading && (
-          <div className="p-4 text-sm text-slate-600">Načítám odjezdy…</div>
+          <div className="p-4 text-sm text-slate-600">
+            Načítám odjezdy…
+          </div>
         )}
 
+        {/* Error */}
         {!loading && error && (
           <div className="m-3 rounded-lg bg-red-50 p-3 text-sm text-red-700">
             {error}
           </div>
         )}
 
-        {!loading && !error && departures.length === 0 && (
-          <div className="p-4 text-sm text-slate-600">
-            Momentálně nejsou k dispozici žádné odjezdy.
-          </div>
-        )}
-
+        {/* Data */}
         {!loading && !error && departures.length > 0 && (
           <div>
-            <div className="grid grid-cols-[64px_64px_72px_1fr_56px_52px] gap-2 bg-slate-50 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-500 md:grid-cols-[72px_72px_88px_1fr_64px_56px]">
+
+            {/* Desktop header */}
+            <div className="hidden md:grid grid-cols-[90px_90px_100px_1fr_80px_80px] gap-3 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase text-slate-500">
               <div>Odj.</div>
               <div>Oček.</div>
               <div>Spoj</div>
               <div>Směr</div>
               <div className="text-center">Nást.</div>
-              <div>Stav</div>
+              <div className="text-right">Stav</div>
             </div>
-            <div>
-              {departures.map((item) => (
-                <CompactRow key={item.id} item={item} />
-              ))}
-            </div>
+
+            {departures.map((item) => (
+              <CompactRow key={item.id} item={item} />
+            ))}
           </div>
         )}
       </div>
